@@ -73,6 +73,7 @@ extras;m2repository;com;android;support;constraint;constraint-layout-solver;1.0.
 extras;m2repository;com;android;support;constraint;constraint-layout-solver;1.0.1
 extras;m2repository;com;android;support;constraint;constraint-layout-solver;1.0.2
 lldb;2.3
+ndk;21.3.6528147
 platforms;android-10
 platforms;android-11
 platforms;android-12
