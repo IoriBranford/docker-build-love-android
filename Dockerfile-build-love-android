@@ -1,9 +1,0 @@
-FROM androidsdk/android-31:latest
-
-RUN apt-get update -yqq && \
-    apt-get install -y make file python && \
-    apt-get clean
-
-COPY tools /opt/tools
-
-RUN /opt/android-sdk-linux/cmdline-tools/tools/bin/sdkmanager "ndk;21.3.6528147"
