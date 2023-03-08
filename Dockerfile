@@ -16,7 +16,7 @@ ENV PATH "${PATH}:${ANDROID_HOME}/emulator"
 ENV PATH "${PATH}:${ANDROID_HOME}/bin"
 
 RUN apt-get update -yqq && \
-    apt-get install -y curl expect git openjdk-11-jdk wget unzip vim && \
+    apt-get install -y curl expect git openjdk-11-jdk wget zip unzip vim && \
     apt-get install -y make file python && \
     apt-get install -y xmlstarlet && \
     apt-get clean
