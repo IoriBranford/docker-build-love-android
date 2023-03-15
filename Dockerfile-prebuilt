@@ -17,10 +17,10 @@ RUN ln -s $(which python3) /usr/bin/python
 RUN ./gradlew assemble bundle
 
 # zip debug symbols for the Play Store
-# COPY package-debug-symbols.sh app/build
-# WORKDIR ${LOVE_ANDROID_DIR}/app/build
-# RUN apk add --no-cache zip
-# RUN package-debug-symbols.sh
+COPY package-debug-symbols.sh app/build
+WORKDIR ${LOVE_ANDROID_DIR}/app/build
+RUN apk add --no-cache zip
+#wip RUN package-debug-symbols.sh
 
 # to edit AndroidManifest.xml
 RUN apk add --no-cache xmlstarlet
