@@ -1,39 +1,17 @@
-FROM ubuntu:18.04
+FROM alvrme/alpine-android:android-31-jdk11
+RUN extras ndk --ndk 21.3.6528147
 
-ENV DEBIAN_FRONTEND noninteractive
+# to clone repo
+RUN apk add --no-cache git
 
-ENV ANDROID_HOME      /opt/android-sdk-linux
-ENV ANDROID_SDK_HOME  ${ANDROID_HOME}
-ENV ANDROID_SDK_ROOT  ${ANDROID_HOME}
-ENV ANDROID_SDK       ${ANDROID_HOME}
+# to build
+RUN apk add --no-cache file python3
+RUN ln -s $(which python3) /usr/bin/python
 
-ENV PATH "${PATH}:${ANDROID_HOME}/cmdline-tools/latest/bin"
-ENV PATH "${PATH}:${ANDROID_HOME}/cmdline-tools/tools/bin"
-ENV PATH "${PATH}:${ANDROID_HOME}/tools/bin"
-ENV PATH "${PATH}:${ANDROID_HOME}/build-tools/31.0.0"
-ENV PATH "${PATH}:${ANDROID_HOME}/platform-tools"
-ENV PATH "${PATH}:${ANDROID_HOME}/emulator"
-ENV PATH "${PATH}:${ANDROID_HOME}/bin"
+# to zip debug symbols for the Play Store
+RUN apk add --no-cache zip
 
-RUN apt-get update -yqq && \
-    apt-get install -y curl expect git openjdk-11-jdk wget zip unzip vim && \
-    apt-get install -y make file python && \
-    apt-get install -y xmlstarlet && \
-    apt-get clean
+# to edit AndroidManifest.xml
+RUN apk add --no-cache xmlstarlet
 
-RUN groupadd android && useradd -d /opt/android-sdk-linux -g android android
-
-COPY tools /opt/tools
-COPY licenses /opt/licenses
-
-WORKDIR /opt/android-sdk-linux
-
-RUN /opt/tools/entrypoint.sh built-in
-
-RUN /opt/android-sdk-linux/cmdline-tools/tools/bin/sdkmanager "cmdline-tools;latest"
-RUN /opt/android-sdk-linux/cmdline-tools/tools/bin/sdkmanager "build-tools;31.0.0"
-RUN /opt/android-sdk-linux/cmdline-tools/tools/bin/sdkmanager "platform-tools"
-RUN /opt/android-sdk-linux/cmdline-tools/tools/bin/sdkmanager "platforms;android-31"
-RUN /opt/android-sdk-linux/cmdline-tools/tools/bin/sdkmanager "ndk;21.3.6528147"
-
-CMD /opt/tools/entrypoint.sh built-in
+CMD /bin/sh
