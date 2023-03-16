@@ -1,45 +1,137 @@
-# Docker for Android SDK 31
+# build-love-android
+CI build environments for the Android version of LOVE. The tag indicates what version can be built and what is included.
 
-Docker for Android SDK 31 with preinstalled build tools and emulator image
+## Examples with `env`
 
-> Edit from [mindrunner/docker-android-sdk](https://github.com/mindrunner/docker-android-sdk)
+An `env` tag only provides the build environment.
 
-**Installed Packages**
+### Building in shell
 ```bash
-# sdkmanager --list
-  Path                                        | Version | Description                                | Location                                   
-  -------                                     | ------- | -------                                    | -------                                    
-  build-tools;32.0.0                          | 32.0.0  | Android SDK Build-Tools 32                 | build-tools/32.0.0                         
-  cmdline-tools;latest                        | 6.0     | Android SDK Command-line Tools (latest)    | cmdline-tools/latest                       
-  emulator                                    | 31.2.8  | Android Emulator                           | emulator                                   
-  patcher;v4                                  | 1       | SDK Patch Applier v4                       | patcher/v4                                 
-  platform-tools                              | 32.0.0  | Android SDK Platform-Tools                 | platform-tools                             
-  platforms;android-31                        | 1       | Android SDK Platform 31                    | platforms/android-31                       
-  system-images;android-31;google_apis;x86_64 | 8       | Google APIs Intel x86 Atom_64 System Image | system-images/android-31/google_apis/x86_64
+export LOVE_VER=11.4
+
+git clone --recursive -b $LOVE_VER https://github.com/love2d/love-android
+cd love-android
+docker run -i -t --rm \
+	-v $(pwd):$(pwd) -w $(pwd) --user $(id -u):$(id -g) \
+	ioribranford/build-love-android:$LOVE_VER-env \
+	./gradlew assembleNormalRecord
 ```
 
-**Usage**
+### Building in GitLab CI
+```yaml
+build-android:
+        stage: build
+        image: ioribranford/build-love-android:11.4-env
+        script:
+                - git clone --recursive -b "11.4" https://github.com/love2d/love-android
+                - cd love-android
+                - ./gradlew assembleNormalRecord bundleNormalRecord
+        artifacts:
+                name: "${CI_PROJECT_NAME}-${CI_COMMIT_REF_NAME}-android"
+                paths:
+                        - "app/build/outputs/apk"
+                        - "app/build/outputs/bundle"
+```
 
-- Interactive way
-  ```bash
-  $ docker run -it --rm --device /dev/kvm androidsdk/android-31:latest bash
-  # check installed packages
-  $ sdkmanager --list
-  # create and run emulator
-  $ avdmanager create avd -n first_avd --abi google_apis/x86_64 -k "system-images;android-31;google_apis;x86_64"
-  $ emulator -avd first_avd -no-window -no-audio &
-  $ adb devices
-  # You can also run other Android platform tools, which are all added to the PATH environment variable
-  ```
+### Editing AndroidManifest
+xmlstarlet is included.
+```bash
+export GAME_TITLE="My Lovely Game"
 
-  To connect the emulator using `adb` on the docker host machine, start the container with `--network host` as well.
-  You could also use [`scrcpy`](https://github.com/Genymobile/scrcpy) to do a screencast of the emulator.
+xmlstarlet ed -L \
+  -u "/manifest/application/@android:label" -v "$GAME_TITLE" \
+  -u "/manifest/application/activity/@android:label" -v "$GAME_TITLE" \
+  app/src/main/AndroidManifest.xml
+```
 
-- Non-interactive way
-  ```bash
-  # check installed packages
-  $ docker run -it --rm androidsdk/android-31:latest sdkmanager --list
-  # list existing emulators
-  $ docker run -it --rm androidsdk/android-31:latest avdmanager list avd
-  # You can also run other Android platform tools, which are all added to the PATH environment variable
-  ```
+### Full example
+Following instructions from love-android wiki https://github.com/love2d/love-android/wiki/Game-Packaging
+```bash
+export LOVE_VER=11.4
+export GAME_DIR="./game"
+export GAME_ID=com.example.mygame
+export VERSION_CODE=1
+export VERSION_NAME=1.0
+export GAME_TITLE="My Lovely Game"
+export ICON_DIR="./androidicons"
+export ICON_ID="@mipmap/ic_launcher"
+export KEYSTORE="keystore.jks"
+# define secret KEYSTORE_ALIAS and KEYSTORE_PASSWORD elsewhere
+
+git clone --recursive -b $LOVE_VER https://github.com/love2d/love-android
+cd love-android
+
+# package the apk with your own LÖVE game
+mkdir -p app/src/embed/assets
+cp -R "$GAME_PATH"/* app/src/embed/assets
+
+# give your package a unique name, change the version
+sed -i -r \
+  -e "s/applicationId .+/applicationId '$GAME_ID'/" \
+  -e "s/versionCode .+/versionCode $VERSION_CODE/" \
+  -e "s/versionName .+/versionName '$VERSION_NAME'/" \
+  app/build.gradle
+
+# change the name
+xmlstarlet ed -L \
+  -u "/manifest/application/@android:label" -v "$GAME_TITLE" \
+  -u "/manifest/application/activity/@android:label" -v "$GAME_TITLE" \
+  app/src/main/AndroidManifest.xml
+
+# change the icon
+cp -R $ICONS_DIR/* app/src/main/res
+xmlstarlet ed -L \
+  -u "/manifest/application/@android:icon" -v "$ICON_ID" \
+  app/src/main/AndroidManifest.xml
+
+# build
+./gradlew assembleEmbedRecordRelease bundleEmbedRecordRelease
+
+# sign apk and bundle if release
+apksigner sign --ks "$KEYSTORE" \
+  --ks-key-alias $KEYSTORE_ALIAS \
+  --ks-pass env:KEYSTORE_PASSWORD --key-pass env:KEYSTORE_PASSWORD \
+  --out "${GAME_TITLE}.apk" \
+  app/build/outputs/apk/embedRecord/release/app-embed-record-release-unsigned.apk
+jarsigner -keystore "$KEYSTORE" \
+  -storepass $KEYSTORE_PASSWORD \
+  -signedjar "${GAME_TITLE}.aab" \
+  app/build/outputs/bundle/embedRecordRelease/app-embed-record-release.aab \
+  $KEYSTORE_ALIAS
+
+# make debug symbols package
+DEBUG_SYMBOLS_PATH=app/build/intermediates/merged_native_libs/embedRecordRelease/out/lib/
+cp -r $DEBUG_SYMBOLS_PATH/* .
+zip -r native-debug-symbols.zip $(ls $DEBUG_SYMBOLS_PATH)
+```
+
+## Examples with `full`
+
+A `full` tag includes a prebuilt love-android to eliminate initial compilation time. Its default action is to customize the app according to env vars and then build.
+
+### In shell
+
+```bash
+export LOVE_VER=11.4
+export GAME_DIR="./game"
+export APPLICATION_ID=com.example.mygame
+export VERSION_CODE=1
+export VERSION_NAME=1.0
+export GAME_TITLE="My Lovely Game"
+export ICONS_DIR="./androidicons"
+export ICON="@mipmap/ic_launcher"
+export KEYSTORE_FILE="$PWD/keystore.jks"
+
+docker run --rm \
+	-v $GAME_DIR:/game:ro \
+	-v ./outputs:/love-android/app/build/outputs \
+	-e KEYSTORE_FILE \
+	-e KEYSTORE_ALIAS -e KEYSTORE_PASSWORD \
+	-e APPLICATION_ID \
+	-e GAME_TITLE \
+	-e VERSION_NAME \
+	-e VERSION_CODE \
+	-e ICON \
+	-v $ICONS_DIR:/love-android/app/src/main/res:ro \
+	ioribranford/build-love-android:$LOVE_VER-full
+```
