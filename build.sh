@@ -1,6 +1,6 @@
 #!/bin/sh
 
-BUILD_TASKS=${BUILD_TASKS:="assembleEmbedRelease bundleEmbedRelease"}
+BUILD_TASKS=${BUILD_TASKS:="assembleEmbedRecordRelease bundleEmbedRecordRelease assembleEmbedNoRecordRelease bundleEmbedNoRecordRelease"}
 
 ID=${ID:="org.love2d.android"}
 TITLE=${TITLE:="LOVE for Android"}
