@@ -15,14 +15,13 @@ WORKDIR ${LOVE_ANDROID_DIR}
 RUN apk add --no-cache file python3
 RUN ln -s $(which python3) /usr/bin/python
 RUN ./gradlew assemble bundle
+COPY ./build.sh .
 
-# zip debug symbols for the Play Store
-WORKDIR ${LOVE_ANDROID_DIR}/app/build
-COPY sign-releases.sh package-debug-symbols.sh ./
+# to sign packages and zip debug symbols for the Play Store
+COPY sign-releases.sh package-debug-symbols.sh app/build/
 RUN apk add --no-cache zip
 
 # to edit AndroidManifest.xml
 RUN apk add --no-cache xmlstarlet
 
-WORKDIR ${LOVE_ANDROID_DIR}
 CMD /bin/sh
