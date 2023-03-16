@@ -20,7 +20,6 @@ RUN ./gradlew assemble bundle
 WORKDIR ${LOVE_ANDROID_DIR}/app/build
 COPY sign-releases.sh package-debug-symbols.sh ./
 RUN apk add --no-cache zip
-RUN ./package-debug-symbols.sh
 
 # to edit AndroidManifest.xml
 RUN apk add --no-cache xmlstarlet
