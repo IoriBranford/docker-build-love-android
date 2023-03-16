@@ -2,10 +2,10 @@
 
 BUILD_TASKS=${BUILD_TASKS:="assembleEmbedRecordRelease bundleEmbedRecordRelease assembleEmbedNoRecordRelease bundleEmbedNoRecordRelease"}
 
-ID=${ID:="org.love2d.android"}
-TITLE=${TITLE:="LOVE for Android"}
-VERSIONCODE=${VERSIONCODE:=1}
-VERSIONNAME=${VERSIONNAME:="0.0.0"}
+APPLICATION_ID=${APPLICATION_ID:="org.love2d.android"}
+GAME_TITLE=${GAME_TITLE:="LOVE for Android"}
+VERSION_CODE=${VERSION_CODE:=1}
+VERSION_NAME=${VERSION_NAME:="0.0.0"}
 ICON=${ICON:="@drawable/love"}
 GAME_DIR=${GAME_DIR:="/game"}
 
@@ -18,15 +18,15 @@ fi
 
 # give your package a unique name, change the version
 sed -i -r \
-  -e "s/applicationId .+/applicationId '$ID'/" \
-  -e "s/versionCode .+/versionCode $VERSIONCODE/" \
-  -e "s/versionName .+/versionName '$VERSIONNAME'/" \
+  -e "s/applicationId .+/applicationId '$APPLICATION_ID'/" \
+  -e "s/versionCode .+/versionCode $VERSION_CODE/" \
+  -e "s/versionName .+/versionName '$VERSION_NAME'/" \
   app/build.gradle
 
 # change the name
 xmlstarlet ed -L \
-  -u "/manifest/application/@android:label" -v "$TITLE" \
-  -u "/manifest/application/activity/@android:label" -v "$TITLE" \
+  -u "/manifest/application/@android:label" -v "$GAME_TITLE" \
+  -u "/manifest/application/activity/@android:label" -v "$GAME_TITLE" \
   app/src/main/AndroidManifest.xml
 
 # change the icon
