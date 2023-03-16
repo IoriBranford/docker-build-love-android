@@ -9,7 +9,7 @@ fi
 for DIR in outputs/apk/*
 do
     BUILD_TYPE=`basename $DIR`
-    UNSIGNED_APK=`find $DIR/release -name "*-unsigned.apk"
+    UNSIGNED_APK=`find $DIR/release -name "*-unsigned.apk"`
     if [ ! -z "$UNSIGNED_APK" ]
     then
         apksigner sign --ks "$KEYSTORE_FILE" \
@@ -23,7 +23,7 @@ done
 for DIR in outputs/bundle/*Release
 do
     BUILD_TYPE=`basename $DIR`
-    UNSIGNED_BUNDLE=`find $DIR -name "*.aab"
+    UNSIGNED_BUNDLE=`find $DIR -name "*.aab"`
     if [ ! -z "$UNSIGNED_BUNDLE" ]
     then
         jarsigner -keystore "$KEYSTORE_FILE" \
