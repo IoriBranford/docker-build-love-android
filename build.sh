@@ -7,12 +7,13 @@ TITLE=${TITLE:="LOVE for Android"}
 VERSIONCODE=${VERSIONCODE:=1}
 VERSIONNAME=${VERSIONNAME:="0.0.0"}
 ICON=${ICON:="@drawable/love"}
+GAME_DIR=${GAME_DIR:="/game"}
 
 # package the apk with your own LÖVE game
-if [ ! -z "$GAME_FILES" ]
+if [ -d "$GAME_DIR" ]
 then
     mkdir -p app/src/embed/assets
-    cp -R $GAME_FILES app/src/embed/assets
+    cp -R "$GAME_DIR"/* app/src/embed/assets
 fi
 
 # give your package a unique name, change the version
