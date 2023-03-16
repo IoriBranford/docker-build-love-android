@@ -17,8 +17,8 @@ RUN ln -s $(which python3) /usr/bin/python
 RUN ./gradlew assemble bundle
 
 # zip debug symbols for the Play Store
-COPY package-debug-symbols.sh app/build
 WORKDIR ${LOVE_ANDROID_DIR}/app/build
+COPY sign-releases.sh package-debug-symbols.sh ./
 RUN apk add --no-cache zip
 RUN ./package-debug-symbols.sh
 
