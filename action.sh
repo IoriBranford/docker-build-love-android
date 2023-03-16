@@ -1,6 +1,9 @@
 #!/bin/sh -l
 
-export GAME_DIR=${GAME_DIR:=$GITHUB_WORKSPACE}
+if [ -f "$ENV_SCRIPT" ]
+then
+    . "$ENV_SCRIPT"
+fi
 
 cd /love-android
 ./build.sh
