@@ -1,0 +1,14 @@
+name: 'Build LOVE Android Game'
+description: 'Build a LOVE game for Android'
+outputs:
+  apkNoRecord:
+    description: 'Path to the apk (no-record version)'
+  apkRecord:
+    description: 'Path to the apk (record version)'
+  bundleNoRecord:
+    description: 'Path to the app bundle (no-record version)'
+  bundleRecord:
+    description: 'Path to the app bundle (record version)'
+runs:
+  using: 'docker'
+  image: 'Dockerfile-action'
