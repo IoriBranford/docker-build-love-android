@@ -24,4 +24,5 @@ RUN apk add --no-cache zip
 # to edit AndroidManifest.xml
 RUN apk add --no-cache xmlstarlet
 
+WORKDIR ${LOVE_ANDROID_DIR}
 CMD /bin/sh
