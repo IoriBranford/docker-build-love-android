@@ -15,6 +15,6 @@ cd /love-android
 
 for TYPE in NoRecord Record
 do
-    echo "apk$TYPE=/love-android/app/build/outputs/apk/embed$TYPE/release/embed$TYPE-release-signed.apk" >> $GITHUB_OUTPUT
-    echo "bundle$TYPE=/love-android/app/build/outputs/bundle/embed${TYPE}Release/embed${TYPE}Release-signed.aab" >> $GITHUB_OUTPUT
+    echo "apks$TYPE=/love-android/app/build/outputs/apk/embed$TYPE/release/" >> $GITHUB_OUTPUT
+    echo "bundles$TYPE=/love-android/app/build/outputs/bundle/embed${TYPE}Release/" >> $GITHUB_OUTPUT
 done

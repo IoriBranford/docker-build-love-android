@@ -1,14 +1,14 @@
 name: 'Build LOVE Android Game'
 description: 'Build a LOVE game for Android'
 outputs:
-  apkNoRecord:
-    description: 'Path to the apk (no-record version)'
-  apkRecord:
-    description: 'Path to the apk (record version)'
-  bundleNoRecord:
-    description: 'Path to the app bundle (no-record version)'
-  bundleRecord:
-    description: 'Path to the app bundle (record version)'
+  apksNoRecord:
+    description: 'Apk output dir (no-record version)'
+  apksRecord:
+    description: 'Apk output dir (record version)'
+  bundlesNoRecord:
+    description: 'App bundle output dir (no-record version)'
+  bundlesRecord:
+    description: 'App bundle output dir (record version)'
 runs:
   using: 'docker'
   image: 'docker://ioribranford/build-love-android:11.4-ghaction'
