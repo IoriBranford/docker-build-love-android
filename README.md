@@ -126,22 +126,15 @@ export KEYSTORE_FILE="$PWD/keystore.jks"
 ### Build in shell
 
 ```bash
-. ./buildenv.sh
 export KEYSTORE_ALIAS=KeystoreAlias
 export KEYSTORE_PASSWORD=K3yst0rePa55w0rd
 
 docker run --rm \
-	-v $GAME_DIR:/game:ro \
+	-v $PWD:$PWD -w $PWD \
 	-v ./outputs:/love-android/app/build/outputs \
-	-e KEYSTORE_FILE \
 	-e KEYSTORE_ALIAS -e KEYSTORE_PASSWORD \
-	-e APPLICATION_ID \
-	-e GAME_TITLE \
-	-e VERSION_NAME \
-	-e VERSION_CODE \
-	-e ICON \
-	-v $ICONS_DIR:/love-android/app/src/main/res:ro \
-	ioribranford/build-love-android:$LOVE_VER-full
+	ioribranford/build-love-android:$LOVE_VER-full \
+  sh -c '. ./buildenv.sh && cd /love-android && ./build.sh'
 ```
 
 ### Build in a GitHub workflow
@@ -164,8 +157,8 @@ jobs:
         with:
           name: android-builds
           path: |
-            ${{ steps.build.outputs.apkNoRecord }}
-            ${{ steps.build.outputs.apkRecord }}
-            ${{ steps.build.outputs.bundleNoRecord }}
-            ${{ steps.build.outputs.bundleRecord }}
+            ${{ steps.build.outputs.apksNoRecord }}
+            ${{ steps.build.outputs.apksRecord }}
+            ${{ steps.build.outputs.bundlesNoRecord }}
+            ${{ steps.build.outputs.bundlesRecord }}
 ```
