@@ -1,6 +1,6 @@
 #!/bin/sh
 
-for DIR in outputs/bundle/*
+for DIR in outputs/bundle/*Release
 do
     BUILD_TYPE=`basename $DIR`
     DEBUG_SYMBOLS_PATH=intermediates/merged_native_libs/$BUILD_TYPE/out/lib/
