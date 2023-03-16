@@ -109,18 +109,26 @@ zip -r native-debug-symbols.zip $(ls $DEBUG_SYMBOLS_PATH)
 
 A `full` tag includes a prebuilt love-android to eliminate initial compilation time. Its default action is to customize the app according to env vars and then build.
 
-### In shell
+For these examples, assume a script `buildenv.sh`:
 
 ```bash
 export LOVE_VER=11.4
-export GAME_DIR="./game"
+export GAME_DIR="$PWD/game"
 export APPLICATION_ID=com.example.mygame
 export VERSION_CODE=1
 export VERSION_NAME=1.0
 export GAME_TITLE="My Lovely Game"
-export ICONS_DIR="./androidicons"
+export ICONS_DIR="$PWD/androidicons"
 export ICON="@mipmap/ic_launcher"
 export KEYSTORE_FILE="$PWD/keystore.jks"
+```
+
+### Build in shell
+
+```bash
+. ./buildenv.sh
+export KEYSTORE_ALIAS=KeystoreAlias
+export KEYSTORE_PASSWORD=K3yst0rePa55w0rd
 
 docker run --rm \
 	-v $GAME_DIR:/game:ro \
@@ -134,4 +142,30 @@ docker run --rm \
 	-e ICON \
 	-v $ICONS_DIR:/love-android/app/src/main/res:ro \
 	ioribranford/build-love-android:$LOVE_VER-full
+```
+
+### Build in a GitHub workflow
+```yaml
+on: [workflow_dispatch]
+
+jobs:
+  build-android:
+    runs-on: ubuntu-latest
+    name: Build for Android
+    steps:
+      - uses: actions/checkout@v3
+      - id: build
+        uses: ioribranford/docker-build-love-android@11.4
+        env:
+          ENV_SCRIPT: "buildenv.sh"
+          KEYSTORE_ALIAS: ${{ secrets.KEYSTORE_ALIAS }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+      - uses: actions/upload-artifact@v3
+        with:
+          name: android-builds
+          path: |
+            ${{ steps.build.outputs.apkNoRecord }}
+            ${{ steps.build.outputs.apkRecord }}
+            ${{ steps.build.outputs.bundleNoRecord }}
+            ${{ steps.build.outputs.bundleRecord }}
 ```
