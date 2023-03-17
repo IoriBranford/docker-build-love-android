@@ -12,7 +12,8 @@ export LOVE_VER=11.4
 git clone --recursive -b $LOVE_VER https://github.com/love2d/love-android
 cd love-android
 docker run -i -t --rm \
-	-v $(pwd):$(pwd) -w $(pwd) --user $(id -u):$(id -g) \
+	-v $(pwd):/prj -w /prj \
+	-v ./outputs:/love-android/app/build/outputs \
 	ioribranford/build-love-android:$LOVE_VER-env \
 	./gradlew assembleNormalRecord
 ```
@@ -107,9 +108,11 @@ zip -r native-debug-symbols.zip $(ls $DEBUG_SYMBOLS_PATH)
 
 ## Examples with `full`
 
-A `full` tag includes a prebuilt love-android to eliminate initial compilation time. Its default action is to customize the app according to env vars and then build.
+A `full` tag includes a prebuilt love-android to eliminate initial compilation time.
 
-For these examples, assume a script `buildenv.sh`:
+Its default action is to customize the app according to env vars, then build all the release APKs and bundles: `assembleEmbedRecordRelease bundleEmbedRecordRelease assembleEmbedNoRecordRelease bundleEmbedNoRecordRelease`.
+
+For these examples, assume an "env script" named `buildenv.sh`.
 
 ```bash
 export LOVE_VER=11.4
@@ -123,6 +126,11 @@ export ICON="@mipmap/ic_launcher"
 export KEYSTORE_FILE="$PWD/keystore.jks"
 ```
 
+To run a different set of build tasks, add BUILD_TYPES:
+```bash
+export BUILD_TYPES="assembleEmbedNoRecordRelease bundleEmbedNoRecordRelease"
+```
+
 ### Build in shell
 
 ```bash
@@ -130,14 +138,15 @@ export KEYSTORE_ALIAS=KeystoreAlias
 export KEYSTORE_PASSWORD=K3yst0rePa55w0rd
 
 docker run --rm \
-	-v $PWD:$PWD -w $PWD \
+	-v $PWD:/prj -w $/prj \
 	-v ./outputs:/love-android/app/build/outputs \
 	-e KEYSTORE_ALIAS -e KEYSTORE_PASSWORD \
-	ioribranford/build-love-android:$LOVE_VER-full \
+	ioribranford/build-love-android:11.4-full \
   sh -c '. ./buildenv.sh && cd /love-android && ./build.sh'
 ```
 
-### Build in a GitHub workflow
+### Build with Github Actions
+
 ```yaml
 on: [workflow_dispatch]
 
@@ -157,8 +166,10 @@ jobs:
         with:
           name: android-builds
           path: |
-            ${{ steps.build.outputs.apksNoRecord }}
-            ${{ steps.build.outputs.apksRecord }}
-            ${{ steps.build.outputs.bundlesNoRecord }}
-            ${{ steps.build.outputs.bundlesRecord }}
+            ${{ steps.build.outputs.apksNoRecord }}/*-signed.apk
+            ${{ steps.build.outputs.apksRecord }}/*-signed.apk
+            ${{ steps.build.outputs.bundlesNoRecord }}/*-signed.aab
+            ${{ steps.build.outputs.bundlesRecord }}/*-signed.aab
+            ${{ steps.build.outputs.bundlesNoRecord }}/native-debug-symbols.zip
+            ${{ steps.build.outputs.bundlesRecord }}/native-debug-symbols.zip
 ```
