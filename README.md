@@ -110,23 +110,27 @@ zip -r native-debug-symbols.zip $(ls $DEBUG_SYMBOLS_PATH)
 
 A `full` tag includes a prebuilt love-android to eliminate initial compilation time.
 
-Its default action is to customize the app according to env vars, then build all the release APKs and bundles: `assembleEmbedRecordRelease bundleEmbedRecordRelease assembleEmbedNoRecordRelease bundleEmbedNoRecordRelease`.
+Its default action is to customize the app according to env vars, build and sign all the release APKs and bundles, and make native debug symbol packages to include with your Play Store submission.
 
 For these examples, assume an "env script" named `buildenv.sh`.
 
 ```bash
 export LOVE_VER=11.4
-export GAME_DIR="$PWD/game"
 export APPLICATION_ID=com.example.mygame
 export VERSION_CODE=1
 export VERSION_NAME=1.0
 export GAME_TITLE="My Lovely Game"
-export ICONS_DIR="$PWD/androidicons"
-export ICON="@mipmap/ic_launcher"
 export KEYSTORE_FILE="$PWD/keystore.jks"
+
+export GAME_DIR="$PWD/game"
+# where you keep main.lua, conf.lua, source files, data files...
+
+export ICON="@mipmap/ic_launcher"
+export ICONS_DIR="$PWD/androidicons"
+# for $ICON, should contain mipmap-*/ic_launcher.png
 ```
 
-To run a different set of build tasks, add BUILD_TYPES:
+The build tasks are `assembleEmbedRecordRelease bundleEmbedRecordRelease assembleEmbedNoRecordRelease bundleEmbedNoRecordRelease`. To run a different set of build tasks, add BUILD_TYPES:
 ```bash
 export BUILD_TYPES="assembleEmbedNoRecordRelease bundleEmbedNoRecordRelease"
 ```
