@@ -1,5 +1,5 @@
-FROM alvrme/alpine-android:android-31-jdk11
-RUN extras ndk --ndk 21.3.6528147
+FROM alvrme/alpine-android:android-33-jdk17
+RUN extras ndk --ndk 23.2.8568313
 
 # to clone repo
 RUN apk add --no-cache git

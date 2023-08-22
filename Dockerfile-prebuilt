@@ -1,7 +1,7 @@
-FROM alvrme/alpine-android:android-31-jdk11
-RUN extras ndk --ndk 21.3.6528147
+FROM alvrme/alpine-android:android-33-jdk17
+RUN extras ndk --ndk 23.2.8568313
 
-ENV LOVE_VERSION        "11.4"
+ENV LOVE_VERSION        "9b9cc15813bfa9d3a4b3ef2bb32fa32492ec9275"
 ENV LOVE_ANDROID_URL    https://github.com/love2d/love-android.git
 ENV LOVE_ANDROID_DIR    /love-android
 
