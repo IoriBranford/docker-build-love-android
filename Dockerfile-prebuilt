@@ -1,27 +1,19 @@
-FROM alvrme/alpine-android:android-33-jdk17
-RUN extras ndk --ndk 23.2.8568313
+FROM ioribranford/build-love-android:11.4-env
 
 ENV LOVE_VERSION        "9b9cc15813bfa9d3a4b3ef2bb32fa32492ec9275"
 ENV LOVE_ANDROID_URL    https://github.com/love2d/love-android.git
 ENV LOVE_ANDROID_DIR    /love-android
 
 # clone repo
-RUN apk add --no-cache git
-RUN git clone --recursive -b $LOVE_VERSION $LOVE_ANDROID_URL ${LOVE_ANDROID_DIR}
-
+RUN git clone --recursive $LOVE_ANDROID_URL ${LOVE_ANDROID_DIR}
 WORKDIR ${LOVE_ANDROID_DIR}
+RUN git checkout $LOVE_VERSION
 
 # build
-RUN apk add --no-cache file python3
-RUN ln -s $(which python3) /usr/bin/python
 RUN ./gradlew assemble bundle
 COPY ./build.sh .
 
 # to sign packages and zip debug symbols for the Play Store
 COPY sign-releases.sh package-debug-symbols.sh app/build/
-RUN apk add --no-cache zip
-
-# to edit AndroidManifest.xml
-RUN apk add --no-cache xmlstarlet
 
 CMD ./build.sh
