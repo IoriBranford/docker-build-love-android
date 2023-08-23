@@ -6,7 +6,6 @@ RUN apk add --no-cache git
 
 # to build
 RUN apk add --no-cache file python3
-RUN ln -s $(which python3) /usr/bin/python
 
 # to zip debug symbols for the Play Store
 RUN apk add --no-cache zip
