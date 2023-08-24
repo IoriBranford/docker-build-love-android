@@ -11,7 +11,7 @@ then
 fi
 
 cd /love-android
-./build.sh
+./build-game.sh
 
 for TYPE in NoRecord Record
 do

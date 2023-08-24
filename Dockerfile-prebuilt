@@ -11,9 +11,9 @@ RUN git checkout $LOVE_VERSION
 
 # build
 RUN ./gradlew assemble bundle
-COPY ./build.sh .
+COPY ./build-game.sh .
 
 # to sign packages and zip debug symbols for the Play Store
 COPY sign-releases.sh package-debug-symbols.sh app/build/
 
-CMD ./build.sh
+CMD ./build-game.sh

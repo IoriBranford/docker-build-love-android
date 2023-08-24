@@ -146,7 +146,7 @@ docker run --rm \
 	-v ./outputs:/love-android/app/build/outputs \
 	-e KEYSTORE_ALIAS -e KEYSTORE_PASSWORD \
 	ioribranford/build-love-android:11.4-full \
-  sh -c '. ./buildenv.sh && cd /love-android && ./build.sh'
+  sh -c '. ./buildenv.sh && cd /love-android && ./build-game.sh'
 ```
 
 ### Build with Github Actions
