@@ -1,4 +1,4 @@
-#!/bin/sh -l
+#!/bin/sh
 
 if [ -f "$ENV_SCRIPT" ]
 then
