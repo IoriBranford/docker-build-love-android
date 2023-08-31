@@ -1,6 +1,24 @@
-#!/bin/sh
+#!/bin/bash
 
-BUILD_TASKS=${BUILD_TASKS:="assembleEmbedRecordRelease bundleEmbedRecordRelease assembleEmbedNoRecordRelease bundleEmbedNoRecordRelease"}
+PACKAGE_TYPES=${PACKAGE_TYPES:="assemble bundle"}
+APP_TYPES=${APP_TYPES:="embed"}
+RECORD_TYPES=${RECORD_TYPES:="record noRecord"}
+BUILD_TYPES=${BUILD_TYPES:="release"}
+
+BUILD_TASKS=""
+for PACKAGE in $PACKAGE_TYPES
+do
+    for APP in $APP_TYPES
+    do
+        for RECORD in $RECORD_TYPES
+        do
+            for BUILD in $BUILD_TYPES
+            do
+                BUILD_TASKS="${BUILD_TASKS} ${PACKAGE}${APP^}${RECORD^}${BUILD^}"
+            done
+        done
+    done
+done
 
 APPLICATION_ID=${APPLICATION_ID:="org.love2d.android"}
 GAME_TITLE=${GAME_TITLE:="LOVE for Android"}
