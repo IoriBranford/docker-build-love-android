@@ -130,9 +130,12 @@ export ICONS_DIR="$PWD/androidicons"
 # for $ICON, should contain mipmap-*/ic_launcher.png
 ```
 
-The build tasks are `assembleEmbedRecordRelease bundleEmbedRecordRelease assembleEmbedNoRecordRelease bundleEmbedNoRecordRelease`. To run a different set of build tasks, add BUILD_TYPES:
+The build tasks are `assembleEmbedRecordRelease bundleEmbedRecordRelease assembleEmbedNoRecordRelease bundleEmbedNoRecordRelease`. To run a different set of build tasks, define the following vars:
 ```bash
-export BUILD_TYPES="assembleEmbedNoRecordRelease bundleEmbedNoRecordRelease"
+export PACKAGE_TYPES="assemble bundle"
+export APP_TYPES="normal embed"
+export RECORD_TYPES="record noRecord"
+export BUILD_TYPES="debug release"
 ```
 
 ### Build in shell
