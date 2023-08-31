@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 if [ -f "$ENV_SCRIPT" ]
 then
@@ -13,10 +13,20 @@ fi
 cd /love-android
 ./build-game.sh
 
-for TYPE in NoRecord Record
+RECORD_TYPES=${RECORD_TYPES:="record noRecord"}
+
+for RECORD in $RECORD_TYPES
 do
-    cp -r /love-android/app/build/outputs/apk/embed$TYPE/release/ $GITHUB_WORKSPACE/apks$TYPE
-    cp -r /love-android/app/build/outputs/bundle/embed${TYPE}Release/ $GITHUB_WORKSPACE/bundles$TYPE
-    echo "apks$TYPE=apks$TYPE/" >> $GITHUB_OUTPUT
-    echo "bundles$TYPE=bundles$TYPE/" >> $GITHUB_OUTPUT
+    APK_DIR=/love-android/app/build/outputs/apk/embed${RECORD^}/release/
+    if [ -d $APK_DIR ]
+    then
+        cp -r $APK_DIR $GITHUB_WORKSPACE/apks${RECORD^}
+        echo "apks${RECORD^}=apks${RECORD^}/" >> $GITHUB_OUTPUT
+    fi
+    BUNDLE_DIR=/love-android/app/build/outputs/bundle/embed${RECORD^}Release/
+    if [ -d $BUNDLE_DIR ]
+    then
+        cp -r $BUNDLE_DIR $GITHUB_WORKSPACE/bundles${RECORD^}
+        echo "bundles${RECORD^}=bundles${RECORD^}/" >> $GITHUB_OUTPUT
+    fi
 done
