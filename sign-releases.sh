@@ -6,30 +6,35 @@ then
     exit 1
 fi
 
-for DIR in outputs/apk/*
-do
-    BUILD_TYPE=`basename $DIR`
-    UNSIGNED_APK=`find $DIR/release -name "*-unsigned.apk"`
-    if [ ! -z "$UNSIGNED_APK" ]
-    then
-        apksigner sign --ks "$KEYSTORE_FILE" \
-            --ks-key-alias $KEYSTORE_ALIAS \
-            --ks-pass env:KEYSTORE_PASSWORD --key-pass env:KEYSTORE_PASSWORD \
-            --out $DIR/release/$BUILD_TYPE-release-signed.apk \
-            $UNSIGNED_APK
-    fi
-done
+APP_TYPES=${APP_TYPES:="embed"}
+RECORD_TYPES=${RECORD_TYPES:="record noRecord"}
 
-for DIR in outputs/bundle/*Release
+for APP in $APP_TYPES
 do
-    BUILD_TYPE=`basename $DIR`
-    UNSIGNED_BUNDLE=`find $DIR -name "*.aab"`
-    if [ ! -z "$UNSIGNED_BUNDLE" ]
-    then
-        jarsigner -keystore "$KEYSTORE_FILE" \
-            -storepass $KEYSTORE_PASSWORD \
-            -signedjar $DIR/$BUILD_TYPE-signed.aab \
-            $UNSIGNED_BUNDLE \
-            $KEYSTORE_ALIAS
-    fi
+    for RECORD in $RECORD_TYPES
+    do
+        OUTPUT_NAME="app-${APP}-${RECORD}-release"
+
+        UNSIGNED_APK=`find outputs/apk -name "$OUTPUT_NAME-unsigned.apk"`
+        if [ ! -z "$UNSIGNED_APK" ]
+        then
+            APK_DIR=`dirname $UNSIGNED_APK`
+            apksigner sign --ks "$KEYSTORE_FILE" \
+                --ks-key-alias $KEYSTORE_ALIAS \
+                --ks-pass env:KEYSTORE_PASSWORD --key-pass env:KEYSTORE_PASSWORD \
+                --out $APK_DIR/$OUTPUT_NAME-signed.apk \
+                $UNSIGNED_APK
+        fi
+
+        UNSIGNED_BUNDLE=`find outputs/bundle -name "$OUTPUT_NAME.aab"`
+        if [ ! -z "$UNSIGNED_BUNDLE" ]
+        then
+            BUNDLE_DIR=`dirname $UNSIGNED_BUNDLE`
+            jarsigner -keystore "$KEYSTORE_FILE" \
+                -storepass $KEYSTORE_PASSWORD \
+                -signedjar $BUNDLE_DIR/$OUTPUT_NAME-signed.aab \
+                $UNSIGNED_BUNDLE \
+                $KEYSTORE_ALIAS
+        fi
+    done
 done
