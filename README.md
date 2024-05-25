@@ -7,7 +7,7 @@ An `env` tag only provides the build environment.
 
 ### Building in shell
 ```bash
-export LOVE_VER=11.4
+export LOVE_VER=11.5
 
 git clone --recursive -b $LOVE_VER https://github.com/love2d/love-android
 cd love-android
@@ -22,9 +22,9 @@ docker run -i -t --rm \
 ```yaml
 build-android:
         stage: build
-        image: ioribranford/build-love-android:11.4-env
+        image: ioribranford/build-love-android:11.5-env
         script:
-                - git clone --recursive -b "11.4" https://github.com/love2d/love-android
+                - git clone --recursive -b "11.5" https://github.com/love2d/love-android
                 - cd love-android
                 - ./gradlew assembleNormalRecord bundleNormalRecord
         artifacts:
@@ -48,7 +48,7 @@ xmlstarlet ed -L \
 ### Full example
 Following instructions from love-android wiki https://github.com/love2d/love-android/wiki/Game-Packaging
 ```bash
-export LOVE_VER=11.4
+export LOVE_VER=11.5
 export GAME_DIR="./game"
 export GAME_ID=com.example.mygame
 export VERSION_CODE=1
@@ -115,7 +115,7 @@ Its default action is to customize the app according to env vars, build and sign
 For these examples, assume an "env script" named `buildenv.sh`.
 
 ```bash
-export LOVE_VER=11.4
+export LOVE_VER=11.5
 export APPLICATION_ID=com.example.mygame
 export VERSION_CODE=1
 export VERSION_NAME=1.0
@@ -145,7 +145,7 @@ docker run --rm \
 	-v $PWD:/prj -w $/prj \
 	-v ./outputs:/love-android/app/build/outputs \
 	-e KEYSTORE_ALIAS -e KEYSTORE_PASSWORD \
-	ioribranford/build-love-android:11.4-full \
+	ioribranford/build-love-android:11.5-full \
   sh -c '. ./buildenv.sh && cd /love-android && ./build-game.sh'
 ```
 
@@ -161,7 +161,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - id: build
-        uses: ioribranford/docker-build-love-android@11.4
+        uses: ioribranford/docker-build-love-android@11.5
         env:
           ENV_SCRIPT: "buildenv.sh"
           KEYSTORE_ALIAS: ${{ secrets.KEYSTORE_ALIAS }}

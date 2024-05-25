@@ -1,6 +1,6 @@
-FROM ioribranford/build-love-android:11.4-env
+FROM ioribranford/build-love-android:11.5-env
 
-ENV LOVE_VERSION        "9b9cc15813bfa9d3a4b3ef2bb32fa32492ec9275"
+ENV LOVE_VERSION        "11.5a"
 ENV LOVE_ANDROID_URL    https://github.com/love2d/love-android.git
 ENV LOVE_ANDROID_DIR    /love-android
 

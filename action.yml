@@ -11,4 +11,4 @@ outputs:
     description: 'App bundle output dir (record version)'
 runs:
   using: 'docker'
-  image: 'docker://ioribranford/build-love-android:11.4-ghaction'
+  image: 'docker://ioribranford/build-love-android:11.5-ghaction'

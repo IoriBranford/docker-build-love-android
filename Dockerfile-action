@@ -1,4 +1,4 @@
-FROM ioribranford/build-love-android:11.4-full
+FROM ioribranford/build-love-android:11.5-full
 
 COPY action.sh /action.sh
 
