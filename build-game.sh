@@ -16,18 +16,14 @@ then
     cp -R "$GAME_DIR"/* app/src/embed/assets
 fi
 
-# give your package a unique name, change the version
+# give your package a unique name, change the version, change the name
 sed -i -r \
-  -e "s/applicationId .+/applicationId '$APPLICATION_ID'/" \
-  -e "s/versionCode .+/versionCode $VERSION_CODE/" \
-  -e "s/versionName .+/versionName '$VERSION_NAME'/" \
-  app/build.gradle
-
-# change the name
-xmlstarlet ed -L \
-  -u "/manifest/application/@android:label" -v "$GAME_TITLE" \
-  -u "/manifest/application/activity/@android:label" -v "$GAME_TITLE" \
-  app/src/main/AndroidManifest.xml
+  -e "s/^#(app.name)=.+/\\1=$GAME_TITLE/" \
+  -e "s/^app.name_byte_array/#&/" \
+  -e "s/^(app.application_id)=.+/\\1=$APPLICATION_ID/" \
+  -e "s/^(app.version_code)=.+/\\1=$VERSION_CODE/" \
+  -e "s/^(app.version_name)=.+/\\1=$VERSION_NAME/" \
+  gradle.properties
 
 # change the icon
 if [ -d "$ICONS_DIR" ]
