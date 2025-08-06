@@ -1,7 +1,7 @@
-FROM alvrme/alpine-android:android-35-jdk17
+FROM alvrme/alpine-android:android-36-jdk17
 
 # versions specified in love-android/app/build.gradle
-RUN extras ndk --ndk 27.1.12297006
+RUN extras ndk --ndk 27.3.13750724
 RUN sdkmanager --install "build-tools;35.0.0"
 
 # to clone repo
