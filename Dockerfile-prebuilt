@@ -6,9 +6,10 @@ ENV LOVE_ANDROID_DIR    /love-android
 ENV GRADLE_OPTS         "-Dorg.gradle.jvmargs='-Xmx4G'"
 
 # clone repo
-RUN git clone --recursive $LOVE_ANDROID_URL ${LOVE_ANDROID_DIR}
+RUN git clone $LOVE_ANDROID_URL ${LOVE_ANDROID_DIR}
 WORKDIR ${LOVE_ANDROID_DIR}
 RUN git checkout $LOVE_VERSION
+RUN git submodule update --init --recursive
 
 # build
 RUN ./gradlew assemble bundle
