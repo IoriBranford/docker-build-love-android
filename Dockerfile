@@ -8,7 +8,7 @@ RUN sdkmanager --install "build-tools;35.0.0"
 RUN apk add --no-cache git
 
 # to build
-RUN apk add --no-cache file python3
+RUN apk add --no-cache file grep
 
 # to zip debug symbols for the Play Store
 RUN apk add --no-cache zip
