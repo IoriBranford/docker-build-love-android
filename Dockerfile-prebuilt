@@ -1,6 +1,6 @@
 FROM ioribranford/build-love-android:11.5-env
 
-ENV LOVE_VERSION        "41f046274a876eb1e2419abac2c0fe209d02d56f"
+ENV LOVE_VERSION        "6144ef11c93b591e4bb345893e55666ad4e9b982"
 ENV LOVE_ANDROID_URL    https://github.com/IoriBranford/love-android.git
 ENV LOVE_ANDROID_DIR    /love-android
 ENV GRADLE_OPTS         "-Dorg.gradle.jvmargs='-Xmx4G'"
@@ -16,6 +16,6 @@ RUN ./gradlew assemble bundle
 COPY ./build-game.sh .
 
 # to sign packages and zip debug symbols for the Play Store
-COPY sign-releases.sh package-debug-symbols.sh app/build/
+COPY sign-releases.sh app/build/
 
 CMD ./build-game.sh

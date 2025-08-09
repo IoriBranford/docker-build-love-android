@@ -174,6 +174,6 @@ jobs:
             ${{ steps.build.outputs.apksRecord }}/*-signed.apk
             ${{ steps.build.outputs.bundlesNoRecord }}/*-signed.aab
             ${{ steps.build.outputs.bundlesRecord }}/*-signed.aab
-            ${{ steps.build.outputs.bundlesNoRecord }}/native-debug-symbols.zip
-            ${{ steps.build.outputs.bundlesRecord }}/native-debug-symbols.zip
+            ${{ steps.build.outputs.debugSymbolsNoRecord }}/native-debug-symbols.zip
+            ${{ steps.build.outputs.debugSymbolsRecord }}/native-debug-symbols.zip
 ```

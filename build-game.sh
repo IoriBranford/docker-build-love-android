@@ -38,5 +38,4 @@ xmlstarlet ed -L \
 
 cd app/build
 ./sign-releases.sh
-./package-debug-symbols.sh
 cd ../..

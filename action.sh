@@ -17,6 +17,15 @@ for TYPE in NoRecord Record
 do
     cp -r /love-android/app/build/outputs/apk/embed$TYPE/release/ $GITHUB_WORKSPACE/apks$TYPE
     cp -r /love-android/app/build/outputs/bundle/embed${TYPE}Release/ $GITHUB_WORKSPACE/bundles$TYPE
-    echo "apks$TYPE=apks$TYPE/" >> $GITHUB_OUTPUT
-    echo "bundles$TYPE=bundles$TYPE/" >> $GITHUB_OUTPUT
+    cp -r /love-android/app/build/outputs/native-debug-symbols/embed${TYPE}Release/ $GITHUB_WORKSPACE/debugSymbols$TYPE
 done
+
+if [ ! -z ${GITHUB_OUTPUT+x} ]
+then
+    for TYPE in NoRecord Record
+    do
+        echo "apks$TYPE=apks$TYPE/" >> $GITHUB_OUTPUT
+        echo "bundles$TYPE=bundles$TYPE/" >> $GITHUB_OUTPUT
+        echo "debugSymbols$TYPE=debugSymbols$TYPE/" >> $GITHUB_OUTPUT
+    done
+fi

@@ -9,6 +9,10 @@ outputs:
     description: 'App bundle output dir (no-record version)'
   bundlesRecord:
     description: 'App bundle output dir (record version)'
+  debugSymbolsNoRecord:
+    description: 'App debug symbols output dir (no-record version)'
+  debugSymbolsRecord:
+    description: 'App debug symbols output dir (record version)'
 runs:
   using: 'docker'
   image: 'docker://ioribranford/build-love-android:11.5-ghaction'
